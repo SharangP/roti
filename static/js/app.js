@@ -82,8 +82,9 @@ var PostForm = React.createClass({
     render: function() {
         return (
             <form className="postform" onSubmit={this.handleSubmit}>
+                <textarea cols="50" rows="3" placeholder="Post" ref="content"></textarea>
+                <br/>
                 <input type="text" placeholder="Author" ref="author" />
-                <input type="text" placeholder="Post" ref="content" />
                 <input type="submit" value="Submit" />
             </form>
         );
@@ -142,10 +143,10 @@ var Posts = React.createClass({
 
         return (
             <div className="posts">
-                <h1>Posts</h1>
-                <hr/>
+                <h2>Create a fact</h2>
                 <PostForm loadPosts={this.loadPosts}/>
                 <hr/>
+                <h2>Top facts</h2>
                 {content}
             </div>
         );

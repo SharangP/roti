@@ -1,7 +1,7 @@
 import os
 import datetime
 
-from flask import Flask, request
+from flask import Flask, request, render_template
 from flask.json import jsonify
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.restless import APIManager
@@ -16,14 +16,15 @@ class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Text)
     author = db.Column(db.String(120))
-    posted = db.Column(db.DateTime)
-    votes = db.Column(db.Integer)
+    posted = db.Column(db.DateTime, default=datetime.datetime.now)
+    votes = db.Column(db.Integer, default=0)
 
     def __init__(self, content, author):
         self.content = content
         self.author = author
-        self.posted = datetime.datetime.now()
-        self.votes = 0
+
+    def __repr__(self):
+        return "<Post %(id)s %(content)s %(author)s %(posted)s %(votes)s>" % self.serialize()
 
     def serialize(self):
         return {
@@ -37,7 +38,11 @@ class Post(db.Model):
 db.create_all()
 
 manager = APIManager(app, flask_sqlalchemy_db=db)
-manager.create_api(Post, methods=['GET', 'POST'])
+manager.create_api(Post, methods=['GET', 'POST', 'PATCH'])
+
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=os.environ.get('PORT', 8000))

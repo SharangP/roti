@@ -18,32 +18,47 @@ var Post = React.createClass({
         }.bind(this);
     },
     render: function() {
-        metaStyle = {
+        var metaStyle = {
             'display': 'inline',
-            'margin-right': '10px'
-        }
+            'margin-right': '20px'
+        };
+
+        var voteStyle = {
+            'margin': '2px'
+        };
+
+        var formStyle = {
+            'margin-bottom': '5px',
+            'margin-top': '5px',
+            'display': 'inline'
+        };
 
         return (
             <div className="post">
                 <div className="meta">
-                    <form className="upvoteform" onSubmit={this.handleVote(1)}>
-                        <input type="hidden" value="1" />
-                        <input type="submit" value="+" />
-                    </form>
+                    <div className="voteinfo" style={metaStyle}>
+                        <form className="upvoteform" onSubmit={this.handleVote(1)} style={formStyle}>
+                            <input type="hidden" value="1" />
+                            <input type="submit" value="+" />
+                        </form>
 
-                    <form className="downvoteform" onSubmit={this.handleVote(-1)}>
-                        <input type="hidden" value="-1" />
-                        <input type="submit" value="-" />
-                    </form>
-                    <h2 className="votes" style={metaStyle}>
-                        { this.props.votes }
-                    </h2>
-                    <h3 className="author" style={metaStyle}>
-                        { this.props.author }
-                    </h3>
-                    <h3 className="posted" style={metaStyle}>
-                        { this.props.posted }
-                    </h3>
+                        <h2 className="votes" style={voteStyle}>
+                            { this.props.votes }
+                        </h2>
+
+                        <form className="downvoteform" onSubmit={this.handleVote(-1)} style={formStyle}>
+                            <input type="hidden" value="-1" />
+                            <input type="submit" value="-" />
+                        </form>
+                    </div>
+                    <div className="otherinfo" style={metaStyle}>
+                        <h3 className="author" style={metaStyle}>
+                            { this.props.author }
+                        </h3>
+                        <h3 className="posted" style={metaStyle}>
+                            { this.props.posted }
+                        </h3>
+                    </div>
                 </div>
                 <p className="content">
                     { this.props.content }

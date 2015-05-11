@@ -106,7 +106,17 @@ var Posts = React.createClass({
             url: 'api/post',
             dataType: 'json',
             success: function(data) {
-                this.setState({data: data.objects})
+                sortedObjects = data.objects.sort(function(a, b) {
+                    if (a['votes'] < b['votes'])
+                        return 1;
+                    else if (a['votes'] > b['votes'])
+                        return -1;
+                    else if (a['posted'] < b['posted'])
+                        return 1;
+                    else
+                        return -1;
+                });
+                this.setState({data: sortedObjects})
             }.bind(this),
             error: function(xhr, status, err) {
                 console.error('api/post', status, err.toString());

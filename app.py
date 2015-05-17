@@ -9,7 +9,8 @@ from flask.ext.security.signals import user_registered
 
 app = Flask(__name__)
 app.config['DEBUG'] = 'PRODUCTION' not in os.environ
-DATABASE_URL = os.environ.get("DATABASE_URL", "postgresql://roti:roti@localhost/roti")
+DATABASE_URL = os.environ.get("DATABASE_URL",
+                              "postgresql://roti:roti@localhost/roti")
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'development_key')
 app.config['SECURITY_PASSWORD_HASH'] = 'bcrypt'
@@ -20,7 +21,7 @@ app.config['SECURITY_REGISTER_USER_TEMPLATE'] = 'register.html'
 app.config['SECURITY_SEND_REGISTER_EMAIL'] = False
 app.config['SECURITY_LOGIN_USER_TEMPLATE'] = 'login.html'
 app.config['SECURITY_LOGIN_URL'] = '/login'
-app.config['SECURITY_CHANGEABLE'] = True
+app.config['SECURITY_CHANGEABLE'] = False
 
 
 # Fake emails for now
@@ -78,9 +79,6 @@ class User(db.Model, UserMixin):
             'email': self.email
         }
 
-db.drop_all()
-db.create_all()
-
 
 class ExtendedRegisterForm(RegisterForm):
     firstname = TextField('First Name', [Required()])
@@ -90,13 +88,34 @@ user_datastore = SQLAlchemyUserDatastore(db, User, Role)
 security = Security(app, user_datastore, register_form=ExtendedRegisterForm)
 
 
+@user_registered.connect_via(app)
+def user_registered_sighandler(app, user, confirm_token):
+    default_role = user_datastore.find_role("user")
+    user_datastore.add_role_to_user(user, default_role)
+    db.session.commit()
+
+
+@app.before_first_request
+def create_user():
+    db.create_all()
+    test_user = user_datastore.get_user("test@user.com")
+    if test_user is None:
+        test_user = user_datastore.create_user(email='test@user.com', password='testtest',
+                               firstname='test', lastname='test')
+        default_role = user_datastore.find_role("user")
+        if default_role is None:
+            default_role = user_datastore.create_role(name="user")
+        user_datastore.add_role_to_user(test_user, default_role)
+        db.session.commit()
+
+
 @app.route('/register', methods=['GET'])
 def register():
     return render_template('register.html')
 
 
-@login_required
 @app.route('/')
+@login_required
 def index():
     return render_template('index.html')
 

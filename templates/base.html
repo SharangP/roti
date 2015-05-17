@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
     <head>
-        <title>Roti</title>
+      <title>{% block title %}Roti{% endblock %}</title>
         <!-- Bootstrap -->
         <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://bootflat.github.io/bootflat/css/bootflat.css">
@@ -20,15 +20,23 @@
         <nav class="navbar navbar-default navbar-static-top">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="#">Roti</a>
+                    <a class="navbar-brand" href="/">Roti</a>
                 </div>
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
                       <li><a class="nav-link" href="makersetup.html">Make Rotis</a></li>
-                      <li><a class="nav-link" href="login.html">Login</a></li>
+                      {% if current_user.is_authenticated() %}
+                      <li><a class="nav-link" href="{{ url_for_security('logout') }}">Logout</a></li>
+                      {% else %}
+                      <li><a class="nav-link" href="{{ url_for_security('login') }}">Login</a></li>
+                      <li><a class="nav-link" href="{{ url_for_security('register') }}">Register</a></li>
+                      {% endif %}
                     </ul>
                 </div>
             </div>
         </nav>
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
     </body>
 </html>

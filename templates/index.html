@@ -37,6 +37,7 @@
     margin-bottom: 15px;
   }
 </style>
+
 {% endblock %}
 
 {% block before_content %}
@@ -58,10 +59,10 @@
                 &nbsp;
               </div>
               <div class="col-lg-4 input-group">
-                <span class="input-group-addon" id="search-addon">I want </span>
-                <input type="text" class="form-control" placeholder="10 whole wheat rotis" aria-describedby="search-addon"/>
+                <span class="input-group-addon" id="search-addon">Find rotis in</span>
+                <input id="query-text" type="text" class="form-control" placeholder="Enter address, city, or ZIP code" aria-describedby="search-addon"/>
                 <span class="input-group-btn">
-                  <button class="btn btn-default" type="button">Go!</button>
+                  <button id="query-button" class="btn btn-default" type="button" onclick="results();">Go!</button>
                 </span>
               </div>
               <div class="col-lg-4">
@@ -93,4 +94,21 @@
 </div>
 <br/>
 <br/>
+
+<script type="text/javascript">
+    results = function() {
+            window.location.href="results?q=" + $("#query-text")[0].value;
+        }
+
+    $("#query-button").onclick = function() {
+        results();
+    }
+
+    $("#query-text").keyup( function(event){
+        if(event.keyCode == 13){
+            $("#query-button").click();
+        }
+    });
+</script>
+
 {% endblock %}

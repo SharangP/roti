@@ -1,4 +1,5 @@
 import os
+import urllib
 import datetime
 import functools
 
@@ -110,6 +111,9 @@ class User(db.Model, UserMixin):
     def is_anonymous(self):
         return False
 
+    def get_name(self):
+        return "%s %s" % (self.firstname, self.lastname)
+
 
 class ExtendedRegisterForm(RegisterForm):
     firstname = TextField('First Name', [Required()])
@@ -175,12 +179,17 @@ def logout():
 def index():
     return render_template('index.html')
 
-
 @app.route('/vendor/<int:vendor_id>')
 @login_required
 def vendor_index(vendor_id):
     vendor = Vendor.query.get_or_404(vendor_id)
     return render_template('vendor.html', vendor=vendor)
+
+@app.route('/results')
+def results():
+    vendors = Vendor.query.all()
+    query_string = urllib.unquote(request.query_string.split('=')[1])
+    return render_template('results.html', query=query_string, vendors=vendors)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=os.environ.get('PORT', 8000))

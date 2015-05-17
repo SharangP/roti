@@ -1,4 +1,5 @@
 import os
+import datetime
 
 from flask import Flask, render_template, redirect, request
 from flask.ext.sqlalchemy import SQLAlchemy
@@ -49,6 +50,33 @@ class Role(db.Model, RoleMixin):
 
     name = db.Column(db.String(), primary_key=True)
 
+class Product(db.Model):
+    __tablename__ = 'product'
+
+    id = db.Column(db.Integer(), primary_key=True)
+    vendor = db.Column(db.Integer(), db.ForeignKey('vendor.id'))
+    name = db.Column(db.String())
+    image = db.Column(db.String())
+    price = db.Column(db.Float(asdecimal=True))
+    description = db.Column(db.Text())
+
+class Vendor(db.Model):
+    __tablename__ = 'vendor'
+
+    id = db.Column(db.Integer(), primary_key=True)
+    user = db.Column(db.Integer(), db.ForeignKey('user.id'))
+    address = db.Column(db.String())
+    products = db.relationship('Product', backref='product')
+
+class Order(db.Model):
+    __tablename__ = 'order'
+
+    id = db.Column(db.Integer(), primary_key=True)
+    vendor = db.Column(db.Integer(), db.ForeignKey('vendor.id'))
+    customer = db.Column(db.Integer(), db.ForeignKey('user.id'))
+    product = db.Column(db.Integer(), db.ForeignKey('product.id'))
+    amount = db.Column(db.Integer())
+    created_time = db.Column(db.DateTime(), default=datetime.datetime.utcnow())
 
 class User(db.Model, UserMixin):
     __tablename__ = 'user'
@@ -61,6 +89,7 @@ class User(db.Model, UserMixin):
     active = db.Column(db.Boolean, default=False)
     roles = db.relationship('Role', secondary=roles_users,
                             backref=db.backref('user', lazy='dynamic'))
+    vendor_id = db.Column(db.String(), db.ForeignKey('vendor.id'), nullable=True)
 
     def is_active(self):
         return True

@@ -59,12 +59,13 @@ class Product(db.Model):
     image = db.Column(db.String())
     price = db.Column(db.Float(asdecimal=True))
     description = db.Column(db.Text())
+    #TODO: add unique(vendor,name)
 
 class Vendor(db.Model):
     __tablename__ = 'vendor'
 
     id = db.Column(db.Integer(), primary_key=True)
-    user = db.Column(db.Integer(), db.ForeignKey('user.id'))
+    user_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
     address = db.Column(db.String())
     products = db.relationship('Product', backref='product')
 
@@ -89,7 +90,7 @@ class User(db.Model, UserMixin):
     active = db.Column(db.Boolean, default=False)
     roles = db.relationship('Role', secondary=roles_users,
                             backref=db.backref('user', lazy='dynamic'))
-    vendor_id = db.Column(db.String(), db.ForeignKey('vendor.id'), nullable=True)
+    vendor = db.relationship('Vendor', uselist=False, backref='user')
 
     def is_active(self):
         return True

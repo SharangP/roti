@@ -1,0 +1,79 @@
+[
+    {
+        "model": "product",
+        "fields": {
+            "id": 1,
+            "vendor": 1,
+            "name": "roti",
+            "image": "fuck",
+            "price": 1.00,
+            "description": "a fucking roti"
+        }
+    },
+    {
+        "model": "product",
+        "fields": {
+            "id": 2,
+            "vendor": 2,
+            "name": "roti",
+            "image": "fuck",
+            "price": 0.25,
+            "description": "a fucking roti from vendor 2"
+        }
+    },
+    {
+        "model": "product",
+        "fields": {
+            "id": 3,
+            "vendor": 2,
+            "name": "dick roti",
+            "image": "dickroti.png",
+            "price": 1.99,
+            "description": "is it a dick? is it a roti?"
+        }
+    },
+    {
+        "model": "vendor",
+        "fields": {
+            "id": 1,
+            "user_id": 1,
+            "address": "33 Rausch St, SF, 94103"
+        }
+    },
+    {
+        "model": "vendor",
+        "fields": {
+            "id": 2,
+            "user_id": 2,
+            "address": "1 Cock Street"
+        }
+    },
+    {
+        "model": "user",
+        "fields": {
+            "id": 1,
+            "email": "test@user.com",
+            "firstname": "test",
+            "lastname": "user",
+            "password": "$2a$12$P5EaXeqVHIYVSvLoXz09VORQhWKz11VKAkKFqtoWVurfj3E9w3mA.",
+            "active": true
+        }
+    },
+    {
+        "model": "user",
+        "fields": {
+            "id": 2,
+            "email": "fuck@user.com",
+            "firstname": "test",
+            "lastname": "user",
+            "password": "$2a$12$P5EaXeqVHIYVSvLoXz09VORQhWKz11VKAkKFqtoWVurfj3E9w3mA.",
+            "active": true
+        }
+    },
+    {
+        "model": "role",
+        "fields": {
+            "name": "test"
+        }
+    }
+]

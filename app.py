@@ -188,8 +188,9 @@ def vendor_index(vendor_id):
 @app.route('/results')
 def results():
     vendors = Vendor.query.all()
+    query_center = "60 Thoreau Drive, Plainsboro, NJ 08536" #TODO: turn the query into an actual location
     query_string = urllib.unquote(request.query_string.split('=')[1])
-    return render_template('results.html', query=query_string, vendors=vendors)
+    return render_template('results.html', query=query_string, query_center=query_center, vendors=vendors)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=os.environ.get('PORT', 8000))

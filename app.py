@@ -8,7 +8,7 @@ from flask.ext.restless import APIManager
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
-DATABASE_URL = os.environ.get("DATABASE_URL", "postgresql://localhost/roti")
+DATABASE_URL = os.environ.get("DATABASE_URL", "roti:roti://localhost/roti")
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 
 db = SQLAlchemy(app)

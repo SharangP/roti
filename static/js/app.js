@@ -170,5 +170,5 @@ var Posts = React.createClass({
 
 React.render(
     <Posts pollInterval={5000} />,
-    document.getElementById('container')
+    document.body
 );

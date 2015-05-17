@@ -1,4 +1,5 @@
 import os
+import urllib
 import datetime
 
 from flask import Flask, render_template, redirect, request
@@ -104,6 +105,9 @@ class User(db.Model, UserMixin):
     def is_anonymous(self):
         return False
 
+    def get_name(self):
+        return "%s %s" % (self.firstname, self.lastname)
+
 
 class ExtendedRegisterForm(RegisterForm):
     firstname = TextField('First Name', [Required()])
@@ -167,6 +171,12 @@ def logout():
 @app.route('/')
 def index():
     return render_template('index.html')
+
+@app.route('/results')
+def results():
+    vendors = Vendor.query.all()
+    query_string = urllib.unquote(request.query_string.split('=')[1])
+    return render_template('results.html', query=query_string, vendors=vendors)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=os.environ.get('PORT', 8000))

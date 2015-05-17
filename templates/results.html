@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block head %}
+<style>
+  .result {
+  }
+
+</style>
+{% endblock %}
+
+{% block content %}
+    <h1>Results</h1>
+    <h3>Results for <i>"{{query}}"</i></h3>
+        <div class="list-group">
+            {% for vendor in vendors %}
+                <a class="list-group-item result">
+                    <h4 class="list-group-item-heading">{{ vendor.user.get_name()}}</h4>
+                    <p class="list-group-item-text">{{ vendor.address }}</p>
+                </a>
+            {% endfor %}
+        </div>
+{% endblock %}

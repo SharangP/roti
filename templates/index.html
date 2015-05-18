@@ -1,5 +1,115 @@
 {% extends "base.html" %}
 
+{% block head %}
+<style>
+  .intro-header {
+    margin-top: -20px;
+    text-align: center;
+    color: #F8F8F8;
+    background: url("/static/img/intro_bg.jpg") no-repeat scroll center center / cover transparent;
+  }
+
+  .overlay {
+    padding-top: 50px;
+    padding-bottom: 50px;
+    background-color: rgba(0,0,0,0.5);
+  }
+
+  .intro-message {
+    position: relative;
+    padding-top: 10%;
+    padding-bottom: 15%;
+  }
+
+  .intro-divider {
+    width: 400px;
+    border-top: 1px solid #F8F8F8;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  }
+
+  .centertext {
+    text-align: center;
+  }
+
+  .steps {
+    margin-top: 15px;
+    margin-bottom: 15px;
+  }
+
+  footer {
+    background-color: #26816A;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    color: #F8F8F8;
+    text-align: center;
+  }
+</style>
+{% endblock %}
+
+{% block before_content %}
+<div class="intro-header">
+  <div class="overlay content">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="intro-message">
+            <div class="row">
+              <div class="col-lg-12">
+                <h1>Buy home cooked rotis</h1>
+                <h3>without the cooking</h3>
+                <hr class="intro-divider"/>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-4">
+                &nbsp;
+              </div>
+              <div class="col-lg-4 input-group">
+                <span class="input-group-addon" id="search-addon">I want </span>
+                <input type="text" class="form-control" placeholder="10 whole wheat rotis" aria-describedby="search-addon"/>
+                <span class="input-group-btn">
+                  <button class="btn btn-default" type="button">Go!</button>
+                </span>
+              </div>
+              <div class="col-lg-4">
+                &nbsp;
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
 {% block content %}
-<h1>Roti</h1
+<div class="row steps">
+  <div class="col-lg-4 centertext">
+    <h3>Step 1</h3>
+    You want rotis
+  </div>
+  <div class="col-lg-4 centertext">
+    <h3>Step 2</h3>
+    Buy some rotis
+  </div>
+  <div class="col-lg-4 centertext">
+    <h3>Step 3</h3>
+    Eat the damn rotis
+  </div>
+</div>
+<br/>
+<br/>
+{% endblock %}
+
+{% block footer %}
+<footer>
+  <div class="container">
+    <div class="col-lg-4">&nbsp;</div>
+    <div class="col-lg-4">
+      © roti.io
+    </div>
+    <div class="col-lg-4">&nbsp;</div>
+  </div>
+</footer>
 {% endblock %}

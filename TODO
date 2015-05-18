@@ -1,0 +1,7 @@
+add unique(vendor,name)
+add order completed column
+turn the query into an actual location
+use live data
+make filtering actualy dynamic
+fix map pins
+refactor shit

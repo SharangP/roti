@@ -21,10 +21,7 @@ def loaddata(fname):
     for d in data:
         model = getattr(app, d["model"].title())
         m = model(**d["fields"])
-        #try:
         app.db.session.merge(m)
-        #except Exception as e:
-            #ipdb.set_trace()
     app.db.session.commit()
 
 

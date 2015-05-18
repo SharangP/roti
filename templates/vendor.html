@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block head %}
+<style>
+  .vendor-container {
+    padding-top: 10px;
+  }
+
+  .vendor-info {
+    padding-top: 20px;
+  }
+
+  #map {
+    width:100%;
+    height:300px;
+  }
+
+  .order {
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+
+  .count {
+    margin-right: 15px;
+  }
+</style>
+
+<script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.js'></script>
+<link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.css' rel='stylesheet' />
+
+<script>
+//TODO use actual mapbox api
+L.mapbox.accessToken = 'pk.eyJ1IjoiYnVoYnVoIiwiYSI6Ilh5bkRKUUUifQ.olgIk6gNL_tuWx_HtqircQ';
+$(document).ready(function() {
+  var geocoder = L.mapbox.geocoder('mapbox.places');
+  var map = L.mapbox.map('map', 'mapbox.streets').setView([38.9, -77], 15);
+  geocoder.query('{{ vendor.address }}', function(err, data) {
+    if (data.latlng) {
+      map.setView([data.latlng[0], data.latlng[1]], 15);
+
+      var fixedMarker = L.marker(new L.LatLng(data.latlng[0], data.latlng[1]), {
+          icon: L.mapbox.marker.icon({
+              'marker-color': 'ff8888'
+          })
+      }).bindPopup('{{ vendor.address }}').addTo(map);
+    }
+  });
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="row vendor-container">
+  <div class="col-lg-2">&nbsp;</div>
+  <div class="col-lg-3 vendor-info">
+    <img src="{{ vendor.image }}" />
+    <h3>{{ vendor.user.name }}</h3>
+    <p>{{ vendor.description }}</p>
+  </div>
+  <div class="col-lg-5">
+    <div id='map'></div>
+  </div>
+  <div class="col-lg-2">&nbsp;</div>
+</div>
+<hr/>
+<div class="container">
+  {% for product in vendor.products %}
+    <div class="row">
+      <div class="col-lg-2">&nbsp;</div>
+      <div class="col-lg-2">
+        <h5>{{ product.name }}</h5>
+        <img src="{{ product.image }}" />
+      </div>
+      <div class="col-lg-4">
+        <br/>
+        <br/>
+        <p>{{ product.description }}</p>
+      </div>
+      <div class="col-lg-1">
+        <span class="label">{{ "${0:0.2f}".format(product.price) }}</span>
+      </div>
+      <div class="col-lg-1">
+        <span class="count">0</span>
+        <a href="#" class="btn btn-success">+</a>
+      </div>
+      <div class="col-lg-2">&nbsp;</div>
+    </div>
+    <hr />
+  {% endfor %}
+  <div class="row order">
+    <div class="col-lg-5">&nbsp;</div>
+    <div class="col-lg-5">
+      <a href="#" class="btn btn-info">Order Now</a>
+    </div>
+    <div class="col-lg-5">&nbsp;</div>
+  </div>
+</div>
+{% endblock %}

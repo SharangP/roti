@@ -1,5 +1,6 @@
 import os
 import datetime
+import functools
 
 from flask import Flask, render_template, redirect, request
 from flask.ext.sqlalchemy import SQLAlchemy
@@ -44,7 +45,6 @@ roles_users = db.Table(
     db.Column('role_id', db.String(), db.ForeignKey('role.name'))
 )
 
-
 class Role(db.Model, RoleMixin):
     __tablename__ = 'role'
 
@@ -66,6 +66,8 @@ class Vendor(db.Model):
 
     id = db.Column(db.Integer(), primary_key=True)
     user_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
+    image = db.Column(db.String())
+    description = db.Column(db.String())
     address = db.Column(db.String())
     products = db.relationship('Product', backref='product')
 
@@ -91,6 +93,10 @@ class User(db.Model, UserMixin):
     roles = db.relationship('Role', secondary=roles_users,
                             backref=db.backref('user', lazy='dynamic'))
     vendor = db.relationship('Vendor', uselist=False, backref='user')
+
+    @property
+    def name(self):
+        return "%s %s" % (self.firstname, self.lastname)
 
     def is_active(self):
         return True
@@ -149,6 +155,7 @@ def create_user():
         user_datastore.add_role_to_user(test_user, default_role)
         db.session.commit()
 
+app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 toolbar = DebugToolbarExtension(app)
 
 
@@ -167,6 +174,13 @@ def logout():
 @app.route('/')
 def index():
     return render_template('index.html')
+
+
+@app.route('/vendor/<int:vendor_id>')
+@login_required
+def vendor_index(vendor_id):
+    vendor = Vendor.query.get_or_404(vendor_id)
+    return render_template('vendor.html', vendor=vendor)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=os.environ.get('PORT', 8000))

@@ -36,16 +36,20 @@ L.mapbox.accessToken = 'pk.eyJ1IjoiYnVoYnVoIiwiYSI6Ilh5bkRKUUUifQ.olgIk6gNL_tuWx
 $(document).ready(function() {
   var geocoder = L.mapbox.geocoder('mapbox.places');
   var map = L.mapbox.map('map', 'mapbox.streets').setView([38.9, -77], 15);
-  geocoder.query('{{ query_center }}', function(err, data) {
-    if (data.latlng) {
-      map.setView([data.latlng[0], data.latlng[1]], 15);
-
-      var fixedMarker = L.marker(new L.LatLng(data.latlng[0], data.latlng[1]), {
-          icon: L.mapbox.marker.icon({
-              'marker-color': 'ff8888'
-          })
-      }).bindPopup('{{ query_center }}').addTo(map);
-    }
+  var addPoint = function(address, pinNumber) {
+      geocoder.query(address, function(err, data) {
+        if (data.latlng) {
+          map.setView([data.latlng[0], data.latlng[1]], 15);
+          var fixedMarker = L.marker(new L.LatLng(data.latlng[0], data.latlng[1]), {
+              icon: L.mapbox.marker.icon({
+                  'marker-color': 'ff8888'
+              })
+          }).bindPopup(address).addTo(map);
+        }
+      });
+  }
+  $(".address").each( function(i,vendor) {
+      addPoint(vendor.textContent, 1);
   });
 });
 </script>
@@ -64,7 +68,7 @@ $(document).ready(function() {
                     <img src="{{ vendor.image }}" />
                 </div>
                 <h4 class="list-group-item-heading">{{ vendor.user.get_name()}}</h4>
-                <i class="list-group-item-text">{{ vendor.address }}</i>
+                <i class="list-group-item-text address">{{ vendor.address }}</i>
                 <p class="list-group-item-text description">{{ vendor.description }}</p>
             </a>
         {% endfor %}

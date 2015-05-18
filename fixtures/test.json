@@ -73,6 +73,26 @@
         }
     },
     {
+        "model": "order",
+        "fields": {
+            "id": 2,
+            "vendor_id": 1,
+            "customer_id": 3,
+            "product_id": 2,
+            "amount": 12
+        }
+    },
+    {
+        "model": "order",
+        "fields": {
+            "id": 3,
+            "vendor_id": 1,
+            "customer_id": 3,
+            "product_id": 2,
+            "amount": 1
+        }
+    },
+    {
         "model": "user",
         "fields": {
             "id": 1,

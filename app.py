@@ -1,13 +1,12 @@
 import os
 import urllib
 import datetime
-import functools
 
 from flask import Flask, render_template, redirect, request
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.login import LoginManager, AnonymousUserMixin, logout_user
 from flask.ext.security import RoleMixin, UserMixin, SQLAlchemyUserDatastore
-from flask.ext.security import Security, login_required
+from flask.ext.security import Security, login_required, current_user
 from flask.ext.security.forms import RegisterForm, TextField, Required
 from flask.ext.security.signals import user_registered
 from flask_debugtoolbar import DebugToolbarExtension
@@ -84,6 +83,7 @@ class Order(db.Model):
     product = db.relationship('Product', foreign_keys='Order.product_id')
     amount = db.Column(db.Integer())
     created_time = db.Column(db.DateTime(), default=datetime.datetime.utcnow())
+    # TODO add order completed column
 
 class User(db.Model, UserMixin):
     __tablename__ = 'user'
@@ -193,6 +193,12 @@ def vendor_index(vendor_id):
 def order_index(order_id):
     order = Order.query.get_or_404(order_id)
     return render_template("order.html", order=order)
+
+@app.route('/order')
+@login_required
+def orders():
+    orders = Order.query.filter_by(customer_id=current_user.id).all()
+    return render_template("orders.html", orders=orders)
 
 @app.route('/results')
 def results():

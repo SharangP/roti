@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block head %}
+<style>
+  .vendor-container {
+    padding-top: 10px;
+  }
+
+  .vendor-info {
+    padding-top: 20px;
+  }
+
+  #map {
+    width:100%;
+    height:300px;
+  }
+
+  .count {
+    margin-right: 15px;
+  }
+</style>
+
+<script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.js'></script>
+<link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.css' rel='stylesheet' />
+
+<script>
+//TODO use actual mapbox api
+L.mapbox.accessToken = 'pk.eyJ1IjoiYnVoYnVoIiwiYSI6Ilh5bkRKUUUifQ.olgIk6gNL_tuWx_HtqircQ';
+$(document).ready(function() {
+  var geocoder = L.mapbox.geocoder('mapbox.places');
+  var map = L.mapbox.map('map', 'mapbox.streets').setView([38.9, -77], 15);
+  geocoder.query('{{ order.vendor.address }}', function(err, data) {
+    if (data.latlng) {
+      map.setView([data.latlng[0], data.latlng[1]], 15);
+
+      var fixedMarker = L.marker(new L.LatLng(data.latlng[0], data.latlng[1]), {
+          icon: L.mapbox.marker.icon({
+              'marker-color': 'ff8888'
+          })
+      }).bindPopup('{{ order.vendor.address }}').addTo(map);
+    }
+  });
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="row vendor-container">
+  <div class="col-lg-2">&nbsp;</div>
+  <div class="col-lg-4">
+    <h2>Your order will be ready for pickup soon!</h2>
+  </div>
+  <div class="col-lg-4">
+    <div id='map'></div>
+  </div>
+  <div class="col-lg-2">&nbsp;</div>
+</div>
+<hr/>
+<div class="container">
+    <div class="row">
+      <div class="col-lg-2">&nbsp;</div>
+      <div class="col-lg-2 vendor-info">
+        <h3>Order Info</h3>
+        <img src="{{ order.vendor.image }}" />
+        <h3>{{ order.vendor.user.name }}</h3>
+      </div>
+      <div class="col-lg-4">
+        </br>
+        </br>
+        </br>
+        </br>
+        <h5><span class="label label-success">{{ order.amount }}</span> x {{ order.product.name }}</h5>
+        <img src="{{ order.product.image }}" />
+      </div>
+      <div class="col-lg-1">
+        </br>
+        </br>
+        </br>
+        </br>
+        <span class="label">{{ "${0:0.2f}".format(order.product.price * order.amount) }}</span>
+      </div>
+      <div class="col-lg-2">&nbsp;</div>
+    </div>
+    <hr />
+</div>
+{% endblock %}

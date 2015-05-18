@@ -63,10 +63,20 @@
         }
     },
     {
+        "model": "order",
+        "fields": {
+            "id": 1,
+            "vendor_id": 1,
+            "customer_id": 3,
+            "product_id": 3,
+            "amount": 5
+        }
+    },
+    {
         "model": "user",
         "fields": {
             "id": 1,
-            "email": "test@user.com",
+            "email": "testvendor@user.com",
             "firstname": "Auntie",
             "lastname": "Patel",
             "password": "password",
@@ -77,9 +87,20 @@
         "model": "user",
         "fields": {
             "id": 2,
-            "email": "test2@user.com",
+            "email": "testvendor2@user.com",
             "firstname": "Baby",
             "lastname": "",
+            "password": "password",
+            "active": true
+        }
+    },
+    {
+        "model": "user",
+        "fields": {
+            "id": 3,
+            "email": "test@user.com",
+            "firstname": "Hungry",
+            "lastname": "Person",
             "password": "password",
             "active": true
         }

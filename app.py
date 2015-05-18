@@ -76,9 +76,12 @@ class Order(db.Model):
     __tablename__ = 'order'
 
     id = db.Column(db.Integer(), primary_key=True)
-    vendor = db.Column(db.Integer(), db.ForeignKey('vendor.id'))
-    customer = db.Column(db.Integer(), db.ForeignKey('user.id'))
-    product = db.Column(db.Integer(), db.ForeignKey('product.id'))
+    vendor_id = db.Column(db.Integer(), db.ForeignKey('vendor.id'))
+    vendor = db.relationship('Vendor', foreign_keys='Order.vendor_id')
+    customer_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
+    customer = db.relationship('User', foreign_keys='Order.customer_id')
+    product_id = db.Column(db.Integer(), db.ForeignKey('product.id'))
+    product = db.relationship('Product', foreign_keys='Order.product_id')
     amount = db.Column(db.Integer())
     created_time = db.Column(db.DateTime(), default=datetime.datetime.utcnow())
 
@@ -184,6 +187,12 @@ def index():
 def vendor_index(vendor_id):
     vendor = Vendor.query.get_or_404(vendor_id)
     return render_template('vendor.html', vendor=vendor)
+
+@app.route('/order/<int:order_id>')
+@login_required
+def order_index(order_id):
+    order = Order.query.get_or_404(order_id)
+    return render_template("order.html", order=order)
 
 @app.route('/results')
 def results():

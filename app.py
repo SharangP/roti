@@ -1,9 +1,10 @@
 import os
 
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, request
 from flask.ext.sqlalchemy import SQLAlchemy
+from flask.ext.login import LoginManager, AnonymousUserMixin, logout_user
 from flask.ext.security import RoleMixin, UserMixin, SQLAlchemyUserDatastore
-from flask.ext.security import Security, login_required, roles_required, current_user
+from flask.ext.security import Security, login_required
 from flask.ext.security.forms import RegisterForm, TextField, Required
 from flask.ext.security.signals import user_registered
 
@@ -21,6 +22,7 @@ app.config['SECURITY_REGISTER_USER_TEMPLATE'] = 'register.html'
 app.config['SECURITY_SEND_REGISTER_EMAIL'] = False
 app.config['SECURITY_LOGIN_USER_TEMPLATE'] = 'login.html'
 app.config['SECURITY_LOGIN_URL'] = '/login'
+app.config['SECURITY_LOGOUT_URL'] = '/logout'
 app.config['SECURITY_CHANGEABLE'] = False
 
 
@@ -36,7 +38,7 @@ db = SQLAlchemy(app)
 
 roles_users = db.Table(
     'roles_users',
-    db.Column('user_id', db.String(), db.ForeignKey('user.email')),
+    db.Column('user_id', db.Integer(), db.ForeignKey('user.id')),
     db.Column('role_id', db.String(), db.ForeignKey('role.name'))
 )
 
@@ -50,17 +52,14 @@ class Role(db.Model, RoleMixin):
 class User(db.Model, UserMixin):
     __tablename__ = 'user'
 
-    email = db.Column(db.String(), primary_key=True)
+    id = db.Column(db.Integer(), primary_key=True)
+    email = db.Column(db.String(), unique=True)
     firstname = db.Column(db.String())
     lastname = db.Column(db.String())
     password = db.Column(db.String())
     active = db.Column(db.Boolean, default=False)
     roles = db.relationship('Role', secondary=roles_users,
                             backref=db.backref('user', lazy='dynamic'))
-
-    @property
-    def id(self):
-        return self.email
 
     def is_active(self):
         return True
@@ -74,11 +73,6 @@ class User(db.Model, UserMixin):
     def is_anonymous(self):
         return False
 
-    def serialize(self):
-        return {
-            'email': self.email
-        }
-
 
 class ExtendedRegisterForm(RegisterForm):
     firstname = TextField('First Name', [Required()])
@@ -86,6 +80,22 @@ class ExtendedRegisterForm(RegisterForm):
 
 user_datastore = SQLAlchemyUserDatastore(db, User, Role)
 security = Security(app, user_datastore, register_form=ExtendedRegisterForm)
+
+
+class AnonymousUser(AnonymousUserMixin):
+    def __init__(self):
+        self.id = None
+        self.roles = []
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.anonymous_user = AnonymousUser
+login_manager.login_view = '/login'
+
+
+@login_manager.user_loader
+def load_user(userid):
+    return User.query.filter_by(email=userid).first()
 
 
 @user_registered.connect_via(app)
@@ -114,8 +124,14 @@ def register():
     return render_template('register.html')
 
 
-@app.route('/')
+@app.route('/logout')
 @login_required
+def logout():
+    logout_user()
+    return redirect(request.args.get('next') or '/')
+
+
+@app.route('/')
 def index():
     return render_template('index.html')
 

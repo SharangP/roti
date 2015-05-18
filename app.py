@@ -7,6 +7,7 @@ from flask.ext.security import RoleMixin, UserMixin, SQLAlchemyUserDatastore
 from flask.ext.security import Security, login_required
 from flask.ext.security.forms import RegisterForm, TextField, Required
 from flask.ext.security.signals import user_registered
+from flask_debugtoolbar import DebugToolbarExtension
 
 app = Flask(__name__)
 app.config['DEBUG'] = 'PRODUCTION' not in os.environ
@@ -117,6 +118,8 @@ def create_user():
             default_role = user_datastore.create_role(name="user")
         user_datastore.add_role_to_user(test_user, default_role)
         db.session.commit()
+
+toolbar = DebugToolbarExtension(app)
 
 
 @app.route('/register', methods=['GET'])

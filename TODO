@@ -1,5 +1,6 @@
 add unique(vendor,name)
 add order completed column
+add angular
 turn the query into an actual location using mapbox api on index page
 use live data
 make filtering actualy dynamic

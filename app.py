@@ -1,9 +1,11 @@
 import os
 import urllib
 import datetime
+import decimal
 
 from flask import Flask, render_template, redirect, request
 from flask.ext.sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import class_mapper
 from flask.ext.login import LoginManager, AnonymousUserMixin, logout_user
 from flask.ext.security import RoleMixin, UserMixin, SQLAlchemyUserDatastore
 from flask.ext.security import Security, login_required, current_user
@@ -45,12 +47,22 @@ roles_users = db.Table(
     db.Column('role_id', db.String(), db.ForeignKey('role.name'))
 )
 
-class Role(db.Model, RoleMixin):
+class Serializable(object):
+    def to_json(self):
+        ignore_cols = getattr(self, "__ignore_columns__", [])
+        return dict((c.name, self._serialze(getattr(self, c.name))) for c in class_mapper(self.__class__).columns if c.name not in ignore_cols)
+
+    def _serialze(self, value):
+        if isinstance(value, decimal.Decimal):
+            return float(value)
+        return value
+
+class Role(db.Model, RoleMixin, Serializable):
     __tablename__ = 'role'
 
     name = db.Column(db.String(), primary_key=True)
 
-class Product(db.Model):
+class Product(db.Model, Serializable):
     __tablename__ = 'product'
 
     id = db.Column(db.Integer(), primary_key=True)
@@ -61,7 +73,7 @@ class Product(db.Model):
     description = db.Column(db.Text())
     #TODO: add unique(vendor,name)
 
-class Vendor(db.Model):
+class Vendor(db.Model, Serializable):
     __tablename__ = 'vendor'
 
     id = db.Column(db.Integer(), primary_key=True)
@@ -71,7 +83,7 @@ class Vendor(db.Model):
     address = db.Column(db.String())
     products = db.relationship('Product', backref='product')
 
-class Order(db.Model):
+class Order(db.Model, Serializable):
     __tablename__ = 'order'
 
     id = db.Column(db.Integer(), primary_key=True)
@@ -82,11 +94,13 @@ class Order(db.Model):
     product_id = db.Column(db.Integer(), db.ForeignKey('product.id'))
     product = db.relationship('Product', foreign_keys='Order.product_id')
     amount = db.Column(db.Integer())
+    pending = db.Column(db.Boolean(), default=True)
     created_time = db.Column(db.DateTime(), default=datetime.datetime.utcnow())
     # TODO add order completed column
 
-class User(db.Model, UserMixin):
+class User(db.Model, UserMixin, Serializable):
     __tablename__ = 'user'
+    __ignore_columns__ = ["password"]
 
     id = db.Column(db.Integer(), primary_key=True)
     email = db.Column(db.String(), unique=True)

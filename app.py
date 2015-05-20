@@ -1,5 +1,7 @@
 import os
+import json
 import urllib
+import urlparse
 import datetime
 import decimal
 
@@ -216,10 +218,11 @@ def orders():
 
 @app.route('/results')
 def results():
-    vendors = Vendor.query.all()
-    query_center = "60 Thoreau Drive, Plainsboro, NJ 08536" #TODO: turn the query into an actual location
-    query_string = urllib.unquote(request.query_string.split('=')[1])
-    return render_template('results.html', query=query_string, query_center=query_center, vendors=vendors)
+    vendors = Vendor.query.all() #TODO: get the right vendors
+    query_dict = urlparse.parse_qs(request.query_string)
+    return render_template('results.html', query=query_dict['q'][0],
+            latlng=json.dumps({'lat': float(query_dict['lat'][0]), 'lng': float(query_dict['lng'][0])}),
+            vendors=vendors)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=os.environ.get('PORT', 8000))

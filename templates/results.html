@@ -67,19 +67,8 @@ $(document).ready(function() {
 <h4>Results for <i>"{{query}}"</i></h4>
 
 <div class="row vendor-container">
-  <div class="col-lg-6 vendor-list">
-    <div class="list-group">
-        {% for vendor in vendors %}
-            <a class="list-group-item row" href="vendor/{{vendor.id}}">
-                <div class="col-lg-3">
-                    <img src="{{ vendor.image }}" />
-                </div>
-                <h4 class="list-group-item-heading">{{ vendor.user.get_name()}}</h4>
-                <i class="list-group-item-text address">{{ vendor.address }}</i>
-                <p class="list-group-item-text description">{{ vendor.description }}</p>
-            </a>
-        {% endfor %}
-     </div>
+  <div class="col-lg-6" id="vendor-list">
+      <script type="text/jsx" src="{{url_for('static', filename='js/vendor-list.js')}}"></script>
   </div>
 
   <div class="col-lg-5">

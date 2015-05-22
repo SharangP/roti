@@ -225,6 +225,7 @@ def vendors():
     vendors = []
     for vendor in Vendor.query.all():
         vendors.append(dict(
+            id=vendor.id,
             image=vendor.image,
             address=vendor.address,
             description=vendor.description,

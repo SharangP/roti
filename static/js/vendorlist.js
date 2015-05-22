@@ -1,7 +1,7 @@
 var Vendor = React.createClass({
     render: function () {
         return (
-            <a className="list-group-item row" href="">
+            <a className="list-group-item row" href={"/vendor/" + this.props.id}>
                 <div className="col-lg-3">
                     <img src={ this.props.image } />
                 </div>
@@ -18,7 +18,7 @@ var VendorList = React.createClass({
     render: function () {
         var vendors = this.props.data.map( function (vendor) {
             return (
-                <Vendor image={vendor.image} user={vendor.user} address={vendor.address} description={vendor.description} />
+                <Vendor id={vendor.id} image={vendor.image} user={vendor.user} address={vendor.address} description={vendor.description} />
             );
         });
 

@@ -28,25 +28,15 @@
 <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.js'></script>
 <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.css' rel='stylesheet' />
 
-<script>
-//TODO use actual mapbox api
-L.mapbox.accessToken = 'pk.eyJ1IjoiYnVoYnVoIiwiYSI6Ilh5bkRKUUUifQ.olgIk6gNL_tuWx_HtqircQ';
-$(document).ready(function() {
-  var geocoder = L.mapbox.geocoder('mapbox.places');
-  var map = L.mapbox.map('map', 'mapbox.streets').setView([38.9, -77], 15);
-  geocoder.query('{{ vendor.address }}', function(err, data) {
-    if (data.latlng) {
-      map.setView([data.latlng[0], data.latlng[1]], 15);
+<script type="text/jsx" src="{{url_for('static', filename='js/mapbox.js')}}"></script>
 
-      var fixedMarker = L.marker(new L.LatLng(data.latlng[0], data.latlng[1]), {
-          icon: L.mapbox.marker.icon({
-              'marker-color': 'ff8888'
-          })
-      }).bindPopup('{{ vendor.address }}').addTo(map);
-    }
-  });
-});
+<script type="text/jsx">
+React.render(
+    <MapBox data={["{{vendor.address}}"]}/>,
+    document.getElementById('map')
+);
 </script>
+
 {% endblock %}
 
 {% block content %}

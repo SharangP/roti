@@ -22,12 +22,26 @@ var MapBox = React.createClass({
         //map.featureLayer.on('click', function(e) {
             //map.panTo(e.layer.getLatLng());
         //});
-
+        
         this.setState({
             query: "San Francisco, CA",
             map: map,
             geocoder: geocoder
         });
+
+        //HACKHACK i am a tool
+        this.props.data.map(function(address) {
+            geocoder.query(address, function(err, data) {
+                if (data.latlng) {
+                    map.setView([data.latlng[0], data.latlng[1]], 15);
+                    var fixedMarker = L.marker(new L.LatLng(data.latlng[0], data.latlng[1]), {
+                        icon: L.mapbox.marker.icon({
+                            'marker-color': 'ff8888'
+                        })
+                    }).bindPopup(address).addTo(map);
+                }
+            }.bind(this));
+        }.bind(this));
     },
 
     componentWillReceiveProps: function (nextProps) {

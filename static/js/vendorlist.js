@@ -1,4 +1,3 @@
-
 var Vendor = React.createClass({
     render: function () {
         return (

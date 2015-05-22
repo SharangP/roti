@@ -7,7 +7,7 @@
       padding-top: 5px;
   }
 
-  .vendor-container {
+  #vendor-container {
     padding-top: 10px;
     padding-bottom: 10px;
   }
@@ -30,22 +30,16 @@
 <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.js'></script>
 <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.css' rel='stylesheet' />
 
+<script type="text/jsx" src="{{url_for('static', filename='js/vendorlist.js')}}"></script>
+<script type="text/jsx" src="{{url_for('static', filename='js/mapbox.js')}}"></script>
+<script type="text/jsx" src="{{url_for('static', filename='js/container.js')}}"></script>
+
 {% endblock %}
 
 {% block content %}
 <h1>Results</h1>
 <h4>Results for <i>"{{query}}"</i></h4>
 
-<div class="row vendor-container">
-  <div class="col-lg-6" id="vendor-list">
-      <script type="text/jsx" src="{{url_for('static', filename='js/vendorlist.js')}}"></script>
-  </div>
-
-  <div class="col-lg-5">
-    <div id='map'>
-      <script type="text/jsx" src="{{url_for('static', filename='js/mapbox.js')}}"></script>
-    </div>
-  </div>
-
+<div class="row" id="vendor-container">
 </div>
 {% endblock %}

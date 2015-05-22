@@ -14,37 +14,9 @@ var Vendor = React.createClass({
 });
 
 var VendorList = React.createClass({
-    getInitialState: function() {
-        return {
-            data: [
-                {user: "Sharang",
-                 image: "http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2014/4/11/1397210130748/Spring-Lamb.-Image-shot-2-011.jpg",
-                 address: "63 Thoreau Drive",
-                 description: "wheee"},
-                {user: "Hurshal",
-                 image: "http://wikipics.net/photos/20150206142322639625248.jpg",
-                 address: "33 Rausch Street",
-                 description: "i suck dicks"}
-            ]
-        };
-    },
-
-    componentDidMount: function () {
-        $.ajax({
-            url: this.props.url,
-            dataType: 'json',
-            cache: false,
-            success: function (data) {
-                this.setState({data: data});
-            }.bind(this),
-            error: function () {
-                console.error(this.props.url, status, err.toString());
-            }.bind(this)
-        });
-    },
 
     render: function () {
-        var vendors = this.state.data.map( function (vendor) {
+        var vendors = this.props.data.map( function (vendor) {
             return (
                 <Vendor image={vendor.image} user={vendor.user} address={vendor.address} description={vendor.description} />
             );
@@ -57,8 +29,3 @@ var VendorList = React.createClass({
         );
     }
 });
-
-React.render(
-    <VendorList url="/vendors" />,
-    document.getElementById("vendor-list")
-);

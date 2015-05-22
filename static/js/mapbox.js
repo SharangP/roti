@@ -23,17 +23,30 @@ var MapBox = React.createClass({
     getInitialState: function () {
         L.mapbox.accessToken = 'pk.eyJ1IjoiYnVoYnVoIiwiYSI6Ilh5bkRKUUUifQ.olgIk6gNL_tuWx_HtqircQ';
         return {
-            points: ["33 Rausch Street, San Francisco", "20 Rausch Street, San Francisco"],
+            points: ["33 Rausch Street, San Francisco", "10 Market Street, San Francisco"],
         }
     },
 
     componentDidMount: function () {
         var self = this;
-        var map = L.mapbox.map('map', 'mapbox.streets').setView([38.9, -122], 15);
+        var map = L.mapbox.map('map', 'mapbox.streets');
         var geocoder = L.mapbox.geocoder('mapbox.places');
-        var points = this.state.points.map( function(point) {
+        this.state.points.map( function(point) {
             self.addPoint(map, geocoder, point);
         });
+
+        //TODO: fit map bounds to markers
+        //var markers = [];
+        //map.featureLayer.eachLayer(function(marker) {
+            //markers.push(marker);
+        //});
+        //var group = new L.featureGroup(markers);
+        //map.fitBounds(group.getBounds().pad(0.5));
+
+        //TODO: pan to pin
+        //map.featureLayer.on('click', function(e) {
+            //map.panTo(e.layer.getLatLng());
+        //});
 
         return {
             query: "San Francisco, CA",
@@ -48,6 +61,8 @@ var MapBox = React.createClass({
 });
 
 React.render(
-    <MapBox />,
+    <MapBox>
+        {points=["94103"]}
+    </MapBox>,
     document.getElementById("map")
 );

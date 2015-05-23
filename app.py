@@ -1,9 +1,10 @@
 import os
 import urllib
+import json
 import datetime
 import decimal
 
-from flask import Flask, render_template, redirect, request
+from flask import Flask, render_template, redirect, request, jsonify
 from flask.ext.sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import class_mapper
 from flask.ext.login import LoginManager, AnonymousUserMixin, logout_user
@@ -216,10 +217,20 @@ def orders():
 
 @app.route('/results')
 def results():
-    vendors = Vendor.query.all()
-    query_center = "60 Thoreau Drive, Plainsboro, NJ 08536" #TODO: turn the query into an actual location
     query_string = urllib.unquote(request.query_string.split('=')[1])
-    return render_template('results.html', query=query_string, query_center=query_center, vendors=vendors)
+    return render_template('results.html', query=query_string)
+
+@app.route('/vendors', methods=['GET']) #TODO: make this an actual query
+def vendors():
+    vendors = []
+    for vendor in Vendor.query.all():
+        vendors.append(dict(
+            image=vendor.image,
+            address=vendor.address,
+            description=vendor.description,
+            user=vendor.user.get_name()))
+    return json.dumps(vendors)
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=os.environ.get('PORT', 8000))

@@ -29,60 +29,12 @@
 <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.css' rel='stylesheet' />
 
 <script type="text/jsx" src="{{url_for('static', filename='js/mapbox.js')}}"></script>
+<script type="text/jsx" src="{{url_for('static', filename='js/vendor_view.js')}}"></script>
 
 <script type="text/jsx">
-React.render(
-    <MapBox data={["{{vendor.address}}"]}/>,
-    document.getElementById('map')
+  React.render(
+    <VendorView url="/api/vendor/{{ vendor_id }}"/>,
+    document.getElementById('content')
 );
 </script>
-
-{% endblock %}
-
-{% block content %}
-<div class="row vendor-container">
-  <div class="col-lg-2">&nbsp;</div>
-  <div class="col-lg-3 vendor-info">
-    <img src="{{ vendor.image }}" />
-    <h3>{{ vendor.user.name }}</h3>
-    <p>{{ vendor.description }}</p>
-  </div>
-  <div class="col-lg-5">
-    <div id='map'></div>
-  </div>
-  <div class="col-lg-2">&nbsp;</div>
-</div>
-<hr/>
-<div class="container">
-  {% for product in vendor.products %}
-    <div class="row">
-      <div class="col-lg-2">&nbsp;</div>
-      <div class="col-lg-2">
-        <h5>{{ product.name }}</h5>
-        <img src="{{ product.image }}" />
-      </div>
-      <div class="col-lg-4">
-        <br/>
-        <br/>
-        <p>{{ product.description }}</p>
-      </div>
-      <div class="col-lg-1">
-        <span class="label">{{ "${0:0.2f}".format(product.price) }}</span>
-      </div>
-      <div class="col-lg-1">
-        <span class="count">0</span>
-        <a href="#" class="btn btn-success">+</a>
-      </div>
-      <div class="col-lg-2">&nbsp;</div>
-    </div>
-    <hr />
-  {% endfor %}
-  <div class="row order">
-    <div class="col-lg-5">&nbsp;</div>
-    <div class="col-lg-5">
-      <a href="#" class="btn btn-info">Order Now</a>
-    </div>
-    <div class="col-lg-5">&nbsp;</div>
-  </div>
-</div>
 {% endblock %}

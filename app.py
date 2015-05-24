@@ -1,10 +1,9 @@
 import os
-import urllib
 import json
 import datetime
 import decimal
 
-from flask import Flask, render_template, redirect, request, jsonify
+from flask import Flask, render_template, redirect, request
 from flask.ext.sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import class_mapper
 from flask.ext.login import LoginManager, AnonymousUserMixin, logout_user
@@ -49,13 +48,15 @@ roles_users = db.Table(
 )
 
 class Serializable(object):
-    def to_json(self):
+    def to_dict(self):
         ignore_cols = getattr(self, "__ignore_columns__", [])
-        return dict((c.name, self._serialze(getattr(self, c.name))) for c in class_mapper(self.__class__).columns if c.name not in ignore_cols)
+        return dict((c.name, self._serialize(getattr(self, c.name))) for c in class_mapper(self.__class__).columns if c.name not in ignore_cols)
 
-    def _serialze(self, value):
+    def _serialize(self, value):
         if isinstance(value, decimal.Decimal):
             return float(value)
+        elif isinstance(value, Serializable):
+            return value.to_dict()
         return value
 
 class Role(db.Model, RoleMixin, Serializable):
@@ -198,14 +199,12 @@ def index():
     return render_template('index.html')
 
 @app.route('/vendor/<int:vendor_id>')
-@login_required
-def vendor_index(vendor_id):
-    vendor = Vendor.query.get_or_404(vendor_id)
-    return render_template('vendor.html', vendor=vendor)
+def vendor(vendor_id):
+    return render_template('vendor.html', vendor_id=vendor_id)
 
 @app.route('/order/<int:order_id>')
 @login_required
-def order_index(order_id):
+def order(order_id):
     order = Order.query.get_or_404(order_id)
     return render_template("order.html", order=order)
 
@@ -219,8 +218,8 @@ def orders():
 def results():
     return render_template('search.html')
 
-@app.route('/vendors', methods=['GET']) #TODO: make this an actual query
-def vendors():
+@app.route('/api/vendors', methods=['GET']) #TODO: make this an actual query
+def api_vendor_list():
     vendors = []
     for vendor in Vendor.query.all():
         vendors.append(dict(
@@ -231,6 +230,13 @@ def vendors():
             user=vendor.user.get_name()))
     return json.dumps(vendors)
 
+@app.route('/api/vendor/<int:vendor_id>', methods=['GET']) #TODO: make this an actual query
+def api_vendor_get(vendor_id):
+    vendor = Vendor.query.get_or_404(vendor_id)
+    vendor_dict = vendor.to_dict()
+    vendor_dict["user"] = vendor.user.to_dict()
+    vendor_dict["products"] = [p.to_dict() for p in vendor.products]
+    return json.dumps(vendor_dict)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=os.environ.get('PORT', 8000))

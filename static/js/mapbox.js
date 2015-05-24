@@ -20,7 +20,7 @@ var MapBox = React.createClass({
         });
 
         var markers = this.props.data.map(function(address, index) {
-          var pan = index === this.props.selected;
+          var pan = index === this.props.selected || this.props.data.length === 1;
           return this.addPoint(address, pan, map, geocoder);
         }.bind(this)).filter(function(marker) {
           return marker != undefined && marker != null;
@@ -39,7 +39,7 @@ var MapBox = React.createClass({
           }
         });
         var markers = nextState.data.map(function(address, index) {
-          var pan = index === nextState.selected;
+          var pan = index === nextState.selected || nextState.data.length === 1;
           if (addresses.indexOf(address) === -1) {
             this.addPoint(address, pan);
           } else if (pan) {
@@ -52,22 +52,24 @@ var MapBox = React.createClass({
         }.bind(this));
     },
 
-    addPoint: function(address, pan, exists, map, geocoder) {
+    addPoint: function(address, pan, map, geocoder) {
         map = map || this.state.map;
         geocoder = geocoder || this.state.geocoder;
+        if (!map || !geocoder)
+          return;
 
-        this.state.geocoder.query(address, function(err, data) {
+        geocoder.query(address, function(err, data) {
             if (data.latlng) {
                 var marker = L.marker(new L.LatLng(data.latlng[0], data.latlng[1]), {
                     icon: L.mapbox.marker.icon({
                         'marker-color': 'ff8888'
                     })
-                }).bindPopup(address).addTo(this.state.map);
+                }).bindPopup(address).addTo(map);
                 marker.removable = true;
                 marker.address = address;
 
                 if (pan) {
-                  this.state.map.setView(marker.getLatLng(), 15);
+                  map.setView(marker.getLatLng(), 15);
                 }
             }
         }.bind(this));

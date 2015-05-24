@@ -1,4 +1,4 @@
-var SearchView = React.createClass({
+var OrderView = React.createClass({
     getInitialState: function() {
         return {
             data: [],
@@ -41,11 +41,11 @@ var SearchView = React.createClass({
                   showButton/>
               </div>
 
-              //TODO select vendor when pin is clicked
               <div className="col-lg-5">
                 <MapBox
                   data={ points }
-                  selected={ this.state.selected }/>
+                  selected={ this.state.selected }
+                  onSelected={ this.onSelected }/>
               </div>
             </div>
         );

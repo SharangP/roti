@@ -32,14 +32,11 @@
 
 <script type="text/jsx" src="{{url_for('static', filename='js/vendorlist.js')}}"></script>
 <script type="text/jsx" src="{{url_for('static', filename='js/mapbox.js')}}"></script>
-<script type="text/jsx" src="{{url_for('static', filename='js/container.js')}}"></script>
-
-{% endblock %}
-
-{% block content %}
-<h1>Results</h1>
-<h4>Results for <i>"{{query}}"</i></h4>
-
-<div class="row" id="vendor-container">
-</div>
+<script type="text/jsx" src="{{url_for('static', filename='js/search_view.js')}}"></script>
+<script type="text/jsx">
+  React.render(
+      <SearchView url="/api/vendors" />,
+      document.getElementById("content")
+  );
+</script>
 {% endblock %}

@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Resolve script directory path
+ROOTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+if [ ! -d "$ROOTDIR/venv" ]; then
+    echo "Setting up virtual python environment"
+    virtualenv "$ROOTDIR/venv" >/dev/null 2>&1
+    make deps
+fi
+
+# include the virtualenv's environment
+export VIRTUAL_ENV_DISABLE_PROMPT=1
+source "$ROOTDIR/venv/bin/activate"
+export PATH="$ROOTDIR/node_modules/.bin:$PATH"
+export NODE_PATH="$ROOTDIR/static/js:$NODE_PATH"

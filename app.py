@@ -215,10 +215,9 @@ def orders():
     orders = Order.query.filter_by(customer_id=current_user.id).all()
     return render_template("orders.html", orders=orders)
 
-@app.route('/results')
+@app.route('/search')
 def results():
-    query_string = urllib.unquote(request.query_string.split('=')[1])
-    return render_template('results.html', query=query_string)
+    return render_template('search.html')
 
 @app.route('/vendors', methods=['GET']) #TODO: make this an actual query
 def vendors():

@@ -1,60 +1,76 @@
 L.mapbox.accessToken = 'pk.eyJ1IjoiYnVoYnVoIiwiYSI6Ilh5bkRKUUUifQ.olgIk6gNL_tuWx_HtqircQ';
 
 var MapBox = React.createClass({
-    addPoint: function(address) {
-        this.state.geocoder.query(address, function(err, data) {
-            if (data.latlng) {
-                this.state.map.setView([data.latlng[0], data.latlng[1]], 15);
-                var fixedMarker = L.marker(new L.LatLng(data.latlng[0], data.latlng[1]), {
-                    icon: L.mapbox.marker.icon({
-                        'marker-color': 'ff8888'
-                    })
-                }).bindPopup(address).addTo(this.state.map);
-            }
-        }.bind(this));
+    getInitialState: function() {
+      return {
+        data: [],
+        selected: undefined
+      };
     },
 
     componentDidMount: function () {
         var map = L.mapbox.map('map', 'mapbox.streets');
         var geocoder = L.mapbox.geocoder('mapbox.places');
 
-        //TODO: pan to pin
-        //map.featureLayer.on('click', function(e) {
-            //map.panTo(e.layer.getLatLng());
-        //});
-        
         this.setState({
-            query: "San Francisco, CA",
             map: map,
-            geocoder: geocoder
+            geocoder: geocoder,
+            data: this.props.data,
+            selected: this.props.selected
         });
 
-        //HACKHACK i am a tool
-        this.props.data.map(function(address) {
-            geocoder.query(address, function(err, data) {
-                if (data.latlng) {
-                    map.setView([data.latlng[0], data.latlng[1]], 15);
-                    var fixedMarker = L.marker(new L.LatLng(data.latlng[0], data.latlng[1]), {
-                        icon: L.mapbox.marker.icon({
-                            'marker-color': 'ff8888'
-                        })
-                    }).bindPopup(address).addTo(map);
-                }
-            }.bind(this));
-        }.bind(this));
+        var markers = this.props.data.map(function(address, index) {
+          var pan = index === this.props.selected;
+          return this.addPoint(address, pan, map, geocoder);
+        }.bind(this)).filter(function(marker) {
+          return marker != undefined && marker != null;
+        });
     },
 
     componentWillReceiveProps: function (nextProps) {
-        nextProps.data.map(this.addPoint);
+        this.setState({data: nextProps.data, selected: nextProps.selected});
+    },
 
-        //TODO: remove points from map too
-        //TODO: fit map bounds to markers
-        //var markers = [];
-        //map.featureLayer.eachLayer(function(marker) {
-            //markers.push(marker);
-        //});
-        //var group = new L.featureGroup(markers);
-        //map.fitBounds(group.getBounds().pad(0.5));
+    componentWillUpdate: function(nextProps, nextState) {
+        var addresses = [];
+        nextState.map.eachLayer(function(marker) {
+          if (marker.removable) {
+            addresses.push(marker.address);
+          }
+        });
+        var markers = nextState.data.map(function(address, index) {
+          var pan = index === nextState.selected;
+          if (addresses.indexOf(address) === -1) {
+            this.addPoint(address, pan);
+          } else if (pan) {
+            nextState.map.eachLayer(function(marker) {
+              if (marker.address === address) {
+                nextState.map.setView(marker.getLatLng(), 15);
+              }
+            });
+          }
+        }.bind(this));
+    },
+
+    addPoint: function(address, pan, exists, map, geocoder) {
+        map = map || this.state.map;
+        geocoder = geocoder || this.state.geocoder;
+
+        this.state.geocoder.query(address, function(err, data) {
+            if (data.latlng) {
+                var marker = L.marker(new L.LatLng(data.latlng[0], data.latlng[1]), {
+                    icon: L.mapbox.marker.icon({
+                        'marker-color': 'ff8888'
+                    })
+                }).bindPopup(address).addTo(this.state.map);
+                marker.removable = true;
+                marker.address = address;
+
+                if (pan) {
+                  this.state.map.setView(marker.getLatLng(), 15);
+                }
+            }
+        }.bind(this));
     },
 
     render: function () {

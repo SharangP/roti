@@ -218,6 +218,10 @@ def orders():
 def results():
     return render_template('search.html')
 
+@app.route('/test')
+def test():
+    return render_template('test.html')
+
 @app.route('/api/vendor', methods=['GET']) #TODO: make this an actual query
 def api_vendor_list():
     vendors = []

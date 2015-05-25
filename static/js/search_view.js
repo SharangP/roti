@@ -29,8 +29,9 @@ var SearchView = React.createClass({
             return vendor.address;
         });
 
+        //TODO select vendor when pin is clicked
         return (
-            <div>
+            <div className="container">
               <h3>Rotis near you</h3>
               <hr/>
               <div className="col-lg-6" id="vendor-list">
@@ -41,7 +42,6 @@ var SearchView = React.createClass({
                   showButton/>
               </div>
 
-              //TODO select vendor when pin is clicked
               <div className="col-lg-5">
                 <MapBox
                   data={ points }

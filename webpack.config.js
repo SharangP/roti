@@ -2,10 +2,13 @@ module.exports = {
   entry: __dirname + "/static/js/index.js",
   devtool: "eval-source-map",
 
+  entry: {
+    order: __dirname + "/static/js/pages/order.js"
+  },
   output: {
     path: __dirname + "/static/assets",
     pathinfo: true,
-    filename: "index.js"
+    filename: "[name].js"
   },
 
   module: {

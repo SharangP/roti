@@ -8,3 +8,7 @@ deps:
 .PHONY: watch
 watch:
 	@source ./activate && npm run watch
+
+.PHONY: static
+static:
+	@source ./activate && npm run static

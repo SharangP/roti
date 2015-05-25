@@ -15,7 +15,8 @@
     "webpack": "^1.9.9"
   },
   "scripts": {
-    "watch": "webpack --watch --progress --colors"
+    "watch": "webpack --watch --progress --colors --config .webpack.js",
+    "static": "webpack --progress --colors --config .webpack.js"
   },
   "author": "roti.io"
 }

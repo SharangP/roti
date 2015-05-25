@@ -3,7 +3,8 @@ module.exports = {
   devtool: "eval-source-map",
 
   entry: {
-    order: __dirname + "/static/js/pages/order.js"
+    search: __dirname + "/static/js/pages/search.js",
+    vendor: __dirname + "/static/js/pages/vendor.js"
   },
   output: {
     path: __dirname + "/static/assets",

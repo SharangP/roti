@@ -1,16 +1,13 @@
 {% extends "base.html" %}
 
 {% block head %}
-<script src="https://fb.me/react-0.13.3.min.js"></script>
-<script src="https://fb.me/JSXTransformer-0.13.3.js"></script>
-
 <style>
 
   .description{
       padding-top: 5px;
   }
 
-  #vendor-container {
+  .vendor-container {
     padding-top: 10px;
     padding-bottom: 10px;
   }
@@ -32,14 +29,8 @@
 
 <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.js'></script>
 <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.css' rel='stylesheet' />
+{% endblock %}
 
-<script type="text/jsx" src="{{url_for('static', filename='js/vendorlist.js')}}"></script>
-<script type="text/jsx" src="{{url_for('static', filename='js/mapbox.js')}}"></script>
-<script type="text/jsx" src="{{url_for('static', filename='js/search_view.js')}}"></script>
-<script type="text/jsx">
-  React.render(
-      <SearchView url="/api/vendor" />,
-      document.getElementById("content")
-  );
-</script>
+{% block post_content %}
+<script type="text/javascript" src="{{url_for('static', filename='assets/search.js')}}"></script>
 {% endblock %}

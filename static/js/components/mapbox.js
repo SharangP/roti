@@ -1,3 +1,5 @@
+var React = require('react');
+
 L.mapbox.accessToken = 'pk.eyJ1IjoiYnVoYnVoIiwiYSI6Ilh5bkRKUUUifQ.olgIk6gNL_tuWx_HtqircQ';
 
 var MapBox = React.createClass({
@@ -79,3 +81,7 @@ var MapBox = React.createClass({
         return <div id="map"/>
     }
 });
+
+module.exports = {
+  MapBox    
+}

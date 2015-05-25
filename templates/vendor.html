@@ -1,9 +1,6 @@
 {% extends "base.html" %}
 
 {% block head %}
-<script src="https://fb.me/react-0.13.3.min.js"></script>
-<script src="https://fb.me/JSXTransformer-0.13.3.js"></script>
-
 <style>
   .vendor-container {
     padding-top: 10px;
@@ -27,17 +24,14 @@
     margin-right: 15px;
   }
 </style>
-
 <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.js'></script>
 <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.css' rel='stylesheet' />
 
-<script type="text/jsx" src="{{url_for('static', filename='js/mapbox.js')}}"></script>
-<script type="text/jsx" src="{{url_for('static', filename='js/vendor_view.js')}}"></script>
-
-<script type="text/jsx">
-  React.render(
-    <VendorView url="/api/vendor/{{ vendor_id }}"/>,
-    document.getElementById('content')
-);
+<script type="text/javascript">
+  window.VENDOR_ID={{vendor_id}};
 </script>
+{% endblock %}
+
+{% block post_content %}
+<script type="text/javascript" src="{{url_for('static', filename='assets/vendor.js')}}"></script>
 {% endblock %}

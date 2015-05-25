@@ -1,3 +1,7 @@
+var React = require('react');
+var MapBox = require('components/mapbox').MapBox;
+var V = require('components/vendor');
+
 var SearchView = React.createClass({
     getInitialState: function() {
         return {
@@ -31,11 +35,11 @@ var SearchView = React.createClass({
 
         //TODO select vendor when pin is clicked
         return (
-            <div className="container">
+            <div className="container vendor-container">
               <h3>Rotis near you</h3>
               <hr/>
               <div className="col-lg-6" id="vendor-list">
-                <VendorList 
+                <V.VendorList 
                   data={ this.state.data }
                   selected={ this.state.selected }
                   onSelected={ this.onSelected }
@@ -51,3 +55,5 @@ var SearchView = React.createClass({
         );
     }
 });
+
+module.exports = { SearchView };

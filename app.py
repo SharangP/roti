@@ -222,6 +222,20 @@ def results():
 def test():
     return render_template('test.html')
 
+@app.route('/make')
+def make_rotis():
+    return render_template('make.html')
+
+@app.route('/setup', methods=['GET', 'POST'])
+@login_required
+def setup():
+    if request.method == 'POST':
+        raise NotImplementedError #TODO
+    else:
+        return render_template('setup.html')
+
+#API
+
 @app.route('/api/vendor', methods=['GET']) #TODO: make this an actual query
 def api_vendor_list():
     vendors = []

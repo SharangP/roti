@@ -3,9 +3,10 @@
   "version": "0.0.1",
   "description": "buy and sell rotis",
   "dependencies": {
-    "reflux": "^0.2.7",
+    "lodash": "^3.9.2",
     "react": "^0.13.2",
-    "lodash": "^3.9.2"
+    "reflux": "^0.2.7",
+    "superagent": "^1.2.0"
   },
   "devDependencies": {
     "babel-core": "^5.4.7",

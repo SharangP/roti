@@ -1,45 +1,32 @@
 var React = require('react');
+var Reflux = require('reflux');
 var MapBox = require('components/mapbox').MapBox;
+var VendorSearchActions = require('actions/vendor_search');
+var VendorSearchStore = require('stores/vendor_search');
 var V = require('components/vendor');
 
 var SearchView = React.createClass({
-    getInitialState: function() {
-        return {
-            data: [],
-            selected: undefined
-        };
-    },
-
-    componentDidMount: function () {
-        $.ajax({
-            url: this.props.url,
-            dataType: 'json',
-            cache: false,
-            success: function (data) {
-                this.setState({data: data, selected: 0});
-            }.bind(this),
-            error: function () {
-                console.error(this.props.url, status, err.toString());
-            }.bind(this)
-        });
+    mixins: [Reflux.connect(VendorSearchStore)],
+    componentDidMount: function() {
+        VendorSearchActions.loadVendors();
     },
 
     onSelected: function(i) {
-      this.setState({ selected: i });
+        VendorSearchActions.select(i);
     },
 
     render: function () {
-        var points = this.state.data.map( function(vendor) {
+        var points = this.state.vendors.map( function(vendor) {
             return vendor.address;
         });
 
         var list;
-        if (this.state.data.length === 0) {
+        if (this.state.vendors.length === 0) {
             list = <p>No rotis found :(</p>;
         } else {
             list = (
                 <V.VendorList
-                  data={ this.state.data }
+                  data={ this.state.vendors }
                   selected={ this.state.selected }
                   onSelected={ this.onSelected }
                   showButton/>

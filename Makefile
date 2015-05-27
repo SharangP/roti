@@ -1,3 +1,5 @@
+SHELL := /bin/bash
+
 .PHONY: deps
 deps:
 	@source ./activate && pip install -Ur requirements.txt

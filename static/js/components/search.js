@@ -33,17 +33,26 @@ var SearchView = React.createClass({
             return vendor.address;
         });
 
+        var list;
+        if (this.state.data.length === 0) {
+            list = <p>No rotis found :(</p>;
+        } else {
+            list = (
+                <V.VendorList
+                  data={ this.state.data }
+                  selected={ this.state.selected }
+                  onSelected={ this.onSelected }
+                  showButton/>
+            );
+        }
+
         //TODO select vendor when pin is clicked
         return (
             <div className="container vendor-container">
               <h3>Rotis near you</h3>
               <hr/>
               <div className="col-lg-6" id="vendor-list">
-                <V.VendorList 
-                  data={ this.state.data }
-                  selected={ this.state.selected }
-                  onSelected={ this.onSelected }
-                  showButton/>
+                { list }
               </div>
 
               <div className="col-lg-5">
